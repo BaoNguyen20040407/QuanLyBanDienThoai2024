@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ Hàng</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        .cart-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Giỏ Hàng</h1>
+
+    <table id="cartTable">
+        <thead>
+            <tr>
+                <th>Sản phẩm</th>
+                <th>Số lượng</th>
+                <th>Giá</th>
+                <th>Tổng</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody id="cartItems">
+            <!-- Sản phẩm sẽ được thêm vào đây -->
+        </tbody>
+    </table>
+
+    <div class="cart-actions">
+        <input type="text" id="productName" placeholder="Tên sản phẩm">
+        <input type="number" id="productQty" placeholder="Số lượng" min="1" value="1">
+        <input type="number" id="productPrice" placeholder="Giá" min="0" value="0">
+        <button onclick="addItem()">Thêm vào giỏ hàng</button>
+    </div>
+
+    <script>
+        let cart = [];
+
+        function renderCart() {
+            const cartTable = document.getElementById('cartItems');
+            cartTable.innerHTML = '';
+
+            cart.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.name}</td>
+                    <td>
+                        <input type="number" value="${item.qty}" min="1" onchange="updateItem(${index}, this.value)">
+                    </td>
+                    <td>${item.price}</td>
+                    <td>${item.qty * item.price}</td>
+                    <td>
+                        <button onclick="removeItem(${index})">Xóa</button>
+                    </td>
+                `;
+                cartTable.appendChild(row);
+            });
+        }
+
+        function addItem() {
+            const name = document.getElementById('productName').value;
+            const qty = parseInt(document.getElementById('productQty').value);
+            const price = parseFloat(document.getElementById('productPrice').value);
+
+            if (name && qty > 0 && price >= 0) {
+                cart.push({ name, qty, price });
+                renderCart();
+            } else {
+                alert('Vui lòng nhập thông tin hợp lệ.');
+            }
+        }
+
+        function removeItem(index) {
+            cart.splice(index, 1);
+            renderCart();
+        }
+
+        function updateItem(index, qty) {
+            cart[index].qty = parseInt(qty);
+            renderCart();
+        }
+    </script>
+
+</body>
+</html>
